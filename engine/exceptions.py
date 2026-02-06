@@ -24,4 +24,17 @@ class SQLError:
         \r\rMessage : {self.msg}
         \r\rLocation : Line {self.line}, Col {self.column}
         \r\rHint : {self.detail}"""
+
+    def to_xml(self):
+        return f"""<?xml version="1.0" encoding="UTF-8"?>
+<error>
+    <status>error</status>
+    <message>{self.msg}</message>
+    <location>
+        <line>{self.line}</line>
+        <column>{self.column}</column>
+    </location>
+    <hint>{self.detail}</hint>
+</error>
+"""    
     

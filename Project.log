@@ -1,2 +1,2 @@
-2026-02-06 19:46:36,378 - SQLValidator - INFO - Valid File Found : test\test.txt
-2026-02-06 19:46:36,379 - SQLValidator - ERROR - Unknown Character Found : -
+2026-02-07 02:49:09,333 - SQLValidator - INFO - Valid File Found : test\test.sql
+2026-02-07 02:49:09,352 - SQLValidator - ERROR - Unknown Character Found : -

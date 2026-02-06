@@ -51,9 +51,12 @@ def run_test(source_input):
 
 if __name__ == "__main__":
     #run_test("SELECT id, name FROM table;")
+   # str=input("enter the string:")
+   # run_test(str)
+    #run_test("test/test.txt")
 
-    run_test("test/test.txt")
+   # run_test("test/test.json")
+   run_test("test/test.sql")
 
-    #run_test("test/test.json")
 
     #run_test("test/bad.txt")

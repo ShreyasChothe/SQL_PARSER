@@ -23,14 +23,15 @@ class FileHandler:
     @staticmethod
     def _handle_file(path: Path):
         """Internal helper method to route file extensions."""
-        if path.suffix == ".txt":
+        if path.suffix in[".txt", ".sql"]:  
             return path.read_text()
         elif path.suffix == '.json':
             return FileHandler._parse_json(path)
         else:
             logger.warning(f"Unsupported file type : {path.suffix}")
             return None
-        
+    
+    
     @staticmethod
     def _parse_json(path: Path):
         try:
