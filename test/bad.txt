@@ -1,0 +1,1 @@
+SELECT * FROM 'oops, forgot to close the quote
