@@ -20,7 +20,7 @@ from engine.exceptions import SQLError
 
 # initialize the logging system
 logger = setup_logger()
-
+'''
 def run_test(source_input):
     print(f"\n---Testinng : {source_input}---")
 
@@ -48,12 +48,56 @@ def run_test(source_input):
             for t in tokens:
                 print(t)
             break
+'''
+def run_test(source_input):
+    print(f"\n--- Testing : {source_input} ---")
+
+    # 1. Test File Handler
+    raw_sql = FileHandler.read(source_input)
+
+    if not raw_sql:
+        logger.error("Could not retrieve SQL content.")
+        return
+
+    # 2. Split Multiple SQL Statements
+    statements = raw_sql.split(";")
+
+    for stmt in statements:
+        stmt = stmt.strip()
+
+        if not stmt:
+            continue
+
+        print(f"\nProcessing Statement: {stmt}")
+
+        # Add semicolon back for proper tokenizing
+        lexer = Lexer(stmt + ";")
+        tokens = []
+
+        while True:
+            token = lexer.get_next_token()
+
+            # If Lexer returns error
+            if isinstance(token, SQLError):
+                print(f"Validation Error : {token.to_txt()}")
+                break
+
+            tokens.append(token)
+
+            if token.type.name == "EOF":
+                print("LEXING SUCCESSFUL")
+                for t in tokens:
+                    print(t)
+                break
+
+
 
 if __name__ == "__main__":
     #run_test("SELECT id, name FROM table;")
 
     run_test("test/test.txt")
+   #run_test("test/test.sql")
 
-    #run_test("test/test.json")
+   # run_test("test/test.json")
 
     #run_test("test/bad.txt")

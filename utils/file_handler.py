@@ -23,7 +23,7 @@ class FileHandler:
     @staticmethod
     def _handle_file(path: Path):
         """Internal helper method to route file extensions."""
-        if path.suffix == ".txt":
+        if path.suffix in [".txt", ".sql"]:
             return path.read_text()
         elif path.suffix == '.json':
             return FileHandler._parse_json(path)
@@ -34,10 +34,18 @@ class FileHandler:
     @staticmethod
     def _parse_json(path: Path):
         try:
-            with open(path, 'r') as f:
-                data = json.load(f)
-
-                return data.get("query", "")
+            with open(path,"r") as f:
+                data=json.load(f)
+            # If JSON contains multiple query object
+            if isinstance(data, list):
+                queries=[]
+                for item in data:
+                    if "query" in item:
+                        queries.append(item["query"])    
+                return "\n".join(queries)
+             # If JSON contains single query object
+            elif isinstance(data, dict):
+                return data.get("query", "")     
         except Exception as e:
             logger.error(f"Failed to parse JSON : {e}")
             return None

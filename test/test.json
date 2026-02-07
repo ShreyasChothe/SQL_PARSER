@@ -1,1 +1,5 @@
-{"query" : "INSERT INTO employee (name) VALUES ('John');"}
+[
+    {"query" : "INSERT INTO employee (name) VALUES ('John');"},
+    {"query": "SELECT * FROM users;"},
+    {"query": "DELETE FROM employee;"}
+]
