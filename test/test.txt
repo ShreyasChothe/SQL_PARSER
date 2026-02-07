@@ -1,2 +1,3 @@
-SELECT * FROM users WHERE id = 10;
-SELECT * FROM  employee;
+SELECT * FROM users;
+INSERT INTO orders VALUES (1, 'item');
+SELECT name, age FROM customers;

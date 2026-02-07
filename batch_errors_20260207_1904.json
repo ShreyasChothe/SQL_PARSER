@@ -1,0 +1,10 @@
+[
+    {
+        "query_index": 1,
+        "query": ".json",
+        "message": "Unknown Character '.' found!",
+        "line": 1,
+        "column": 1,
+        "hint": "Unknown Character has been detected!"
+    }
+]

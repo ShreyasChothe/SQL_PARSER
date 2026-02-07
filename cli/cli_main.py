@@ -2,6 +2,8 @@ import sys
 from pathlib import Path
 ROOT_DIR = Path(__file__).resolve().parent.parent
 sys.path.append(str(ROOT_DIR))
+from datetime import datetime
+from utils.output_handler import OutputHandler
 
 from rich.console import Console
 from rich.panel import Panel
@@ -55,6 +57,8 @@ def show_menu():
     menu_table.add_row("2", "Validate SQL from file")
     menu_table.add_row("3", "Interactive SQL shell")
     menu_table.add_row("4", "Exit")
+    menu_table.add_row("5", "Choose your Output format ")
+
 
     console.print(menu_table)
 
@@ -128,6 +132,93 @@ def interactive_shell():
             break
         run_lexer(query)
 
+
+
+
+def batch_validate_file():
+    console.print(Panel.fit("[bold cyan]Batch SQL Validation[/bold cyan]", border_style="cyan"))
+    
+    # Input file
+    path = Prompt.ask("Enter input file path (.txt or .json)")
+    raw_content = FileHandler.read(path)
+    if not raw_content:
+        console.print("[bold red]Failed to read input file[/bold red]")
+        return
+
+    # Output format
+    console.print("Select output format: txt / json / csv / all")
+    out_format = Prompt.ask("Format", choices=["txt", "json", "csv", "all"], default="all")
+
+    # Prepare results storage
+    results = []
+    errors = []
+
+    # Determine queries
+    queries = []
+    if isinstance(raw_content, str):
+        # txt file, one query per line
+        queries = [q.strip() for q in raw_content.splitlines() if q.strip()]
+    elif isinstance(raw_content, dict):
+        # json file, expect "queries" key
+        queries = raw_content.get("queries", [])
+
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M")
+
+    # Process each query
+    for idx, query in enumerate(queries, start=1):
+        lexer = Lexer(query)
+        tokens = []
+
+        while True:
+            token = lexer.get_next_token()
+            if isinstance(token, SQLError):
+                errors.append({
+                    "query_index": idx,
+                    "query": query,
+                    "message": token.msg,
+                    "line": token.line,
+                    "column": token.column,
+                    "hint": token.detail
+                })
+                break
+            tokens.append({"type": token.type.name, "value": token.value})
+            if token.type.name == "EOF":
+                break
+        
+        if tokens:
+            results.append({
+                "query_index": idx,
+                "query": query,
+                "tokens": tokens
+            })
+
+    # Save files
+    if out_format in ["txt", "all"]:
+        OutputHandler.save_txt(f"batch_results_{timestamp}.txt",
+                               "\n\n".join([f"Query {r['query_index']}:\n{r['query']}\nTokens: {r['tokens']}" for r in results]))
+        OutputHandler.save_txt(f"batch_errors_{timestamp}.txt",
+                               "\n\n".join([f"Query {e['query_index']}:\n{e['query']}\nError: {e['message']}\nLocation: Line {e['line']}, Col {e['column']}\nHint: {e['hint']}" for e in errors]))
+    
+    if out_format in ["json", "all"]:
+        OutputHandler.save_json(f"batch_results_{timestamp}.json", results)
+        OutputHandler.save_json(f"batch_errors_{timestamp}.json", errors)
+
+    if out_format in ["csv", "all"]:
+        # Flatten tokens/errors for CSV
+        flat_results = []
+        for r in results:
+            for t in r["tokens"]:
+                flat_results.append({"query_index": r["query_index"], "query": r["query"], "token_type": t["type"], "token_value": t["value"]})
+        OutputHandler.save_csv(f"batch_results_{timestamp}.csv", flat_results)
+
+        flat_errors = []
+        for e in errors:
+            flat_errors.append({"query_index": e["query_index"], "query": e["query"], "message": e["message"], "line": e["line"], "column": e["column"], "hint": e["hint"]})
+        OutputHandler.save_csv(f"batch_errors_{timestamp}.csv", flat_errors)
+
+    console.print(Panel.fit(f"[bold green]Batch processing completed![/bold green]\nResults and errors saved with timestamp {timestamp}", border_style="green"))
+
+
 # ---------------- MAIN APP LOOP ---------------- #
 
 def main():
@@ -135,7 +226,8 @@ def main():
 
     while True:
         show_menu()
-        choice = Prompt.ask("Select option", choices=["1","2","3","4"])
+        choice = Prompt.ask("Select option", choices=["1","2","3","4","5"])
+
 
         if choice == "1":
             validate_from_text()
@@ -145,7 +237,10 @@ def main():
             interactive_shell()
         elif choice == "4":
             console.print(Panel.fit("[bold green]Goodbye 👋[/bold green]", border_style="green"))
-            break
+        elif choice == "5":
+            batch_validate_file()
+    # no break
+
 
         input("\nPress Enter to return to menu...")
         show_welcome()
