@@ -1,3 +1,3 @@
 SELECT * FROM users;
 INSERT INTO orders VALUES (1, 'item');
-SELECT name, age FROM customers;
+SELECT name, age FROM --customers;

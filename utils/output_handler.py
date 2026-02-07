@@ -1,29 +1,44 @@
+import os
 import json
 import csv
 from pathlib import Path
+
+# 🔹 Output directory constant
+OUTPUT_DIR = Path("output")
+
+# 🔹 Create folder automatically if not exists
+OUTPUT_DIR.mkdir(exist_ok=True)
+
 
 class OutputHandler:
     
     @staticmethod
     def save_txt(filename: str, content: str):
-        path = Path(filename)
+        # save inside output folder
+        path = OUTPUT_DIR / filename
         path.write_text(content, encoding="utf-8")
+        print(f"[Saved TXT] {path}")
     
     @staticmethod
     def save_json(filename: str, data):
-        path = Path(filename)
+        # save inside output folder
+        path = OUTPUT_DIR / filename
         with open(path, 'w', encoding="utf-8") as f:
             json.dump(data, f, indent=4)
+        print(f"[Saved JSON] {path}")
     
     @staticmethod
     def save_csv(filename: str, data: list):
         """
         data: list of dicts or list of lists
         """
-        path = Path(filename)
         if not data:
             return
         
+        # save inside output folder
+        path = OUTPUT_DIR / filename
+
+        # determine headers
         if isinstance(data[0], dict):
             headers = data[0].keys()
         else:
@@ -37,3 +52,5 @@ class OutputHandler:
                     writer.writerow(row.values())
                 else:
                     writer.writerow(row)
+
+        print(f"[Saved CSV] {path}")

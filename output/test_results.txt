@@ -1,0 +1,11 @@
+Query 1:
+SELECT * FROM users;
+Tokens: [{'type': 'SELECT', 'value': 'SELECT'}, {'type': 'ASTERISK', 'value': '*'}, {'type': 'FROM', 'value': 'FROM'}, {'type': 'IDENTIFIER', 'value': 'users'}, {'type': 'SEMICOLON', 'value': ';'}, {'type': 'EOF', 'value': None}]
+
+Query 2:
+INSERT INTO orders VALUES (1, 'item');
+Tokens: [{'type': 'INSERT', 'value': 'INSERT'}, {'type': 'INTO', 'value': 'INTO'}, {'type': 'IDENTIFIER', 'value': 'orders'}, {'type': 'VALUES', 'value': 'VALUES'}, {'type': 'LPAREN', 'value': '('}, {'type': 'NUMBER', 'value': 1}, {'type': 'COMMA', 'value': ','}, {'type': 'STRING', 'value': 'item'}, {'type': 'RPAREN', 'value': ')'}, {'type': 'SEMICOLON', 'value': ';'}, {'type': 'EOF', 'value': None}]
+
+Query 3:
+SELECT name, age FROM --customers;
+Tokens: [{'type': 'SELECT', 'value': 'SELECT'}, {'type': 'IDENTIFIER', 'value': 'name'}, {'type': 'COMMA', 'value': ','}, {'type': 'IDENTIFIER', 'value': 'age'}, {'type': 'FROM', 'value': 'FROM'}]

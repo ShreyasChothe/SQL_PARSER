@@ -1,2 +1,2 @@
-2026-02-07 19:04:38,329 - SQLValidator - INFO - Valid String Found : .json
-2026-02-07 19:04:59,015 - SQLValidator - ERROR - Unknown Character Found : .
+2026-02-08 01:02:44,369 - SQLValidator - INFO - Valid File Found : C:\Users\USER\OneDrive\Desktop\SQL_PARSER\test\test.txt
+2026-02-08 01:02:50,087 - SQLValidator - ERROR - Unknown Character Found : -
