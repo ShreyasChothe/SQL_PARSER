@@ -1,1 +1,1 @@
-{"query" : "INSERT INTO employee (name) VALUES ('John');"}
+{"query" : " INTO employee (name) VALUES ('John');"}
