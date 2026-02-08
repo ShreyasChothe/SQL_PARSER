@@ -1,5 +1,0 @@
-Query 1:
-.json
-Error: Unknown Character '.' found!
-Location: Line 1, Col 1
-Hint: Unknown Character has been detected!
