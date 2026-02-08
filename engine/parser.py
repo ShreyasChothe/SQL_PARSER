@@ -66,10 +66,10 @@ class Parser:
             while self.current_token.type == TokenType.COMMA:
                 self.eat(TokenType.COMMA)
                 if self.current_token.type != TokenType.IDENTIFIER:
-                    return SQLError("Expected column name after ','", self.current_token.line, self.current_token.column)
+                    return SQLError("Expected column name after ','", self.current_token.line, self.current_token.column, detail="Expected a column name after ','")
                 self.eat(TokenType.IDENTIFIER)
         else:
-            return SQLError(message="Expected column name or '*' after SELECT", line=self.current_token.line, column=self.current_token.column)
+            return SQLError(message="Expected column name or '*' after SELECT", line=self.current_token.line, column=self.current_token.column, detail="Expected a column name after ','")
 
         if self.eat(TokenType.FROM): return self.error
         

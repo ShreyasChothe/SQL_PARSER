@@ -1,117 +1,43 @@
-#---------------------------------------------------------
-# Testing Logger : 
-
-#from utils.logger import setup_logger
-
-# #Initialize the logger
-# logger = setup_logger()
-
-# logger.info("Project Initialized Succesfully!!")
-# logger.debug("This is a debug message for the dev!!")
-# logger.error("This is what an error looks like!")
-#---------------------------------------------------------
-
-#---------------------------------------------------------
-# Testing FileHandler, Lexer :
-from utils.logger import setup_logger
+# main.py
+import logging
 from utils.file_handler import FileHandler
-from engine.lexer import Lexer
-from engine.parser import Parser
+from utils.output_handler import OutputHandler
+from engine.validator import ValidatorEngine
 from engine.exceptions import SQLError
-from engine.tokens import TokenType
 
-# initialize the logging system
-logger = setup_logger()
+# Initialize your logging here
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger("SQLValidator")
 
-def validate_sql(source_input):
-    print(f"\n{"=" * 50}")
-    print(f"Validating : {source_input}")
-    print(f"\n{"=" * 50}")
-
-    # 1 fetch sql
-    raw_sql = FileHandler.read(source_input)
-    if not raw_sql:
-        print("Error : Could not read input")
-        return
+def run_validator(input_source):
+    print(f"\n--- Process started for: {input_source} ---")
     
-    # 2 lexical analysis
-    lexer = Lexer(raw_sql)
-    tokens = []
+    # 1. Get the Data
+    raw_sql = FileHandler.read(input_source)
+    if not raw_sql:
+        print("❌ Error: File is empty or not found.")
+        return
 
-    while True:
-        token = lexer.get_next_token()
-        if isinstance(token, SQLError):
-            print(f"Lexer Error : {token.to_txt()}")
-            return
-        
-        tokens.append(token)
-        if token.type.name == 'EOF':
-            break
+    # 2. Validate (The "Clean" Way)
+    result = ValidatorEngine.validate(raw_sql)
 
-    # 3 syntax analysis (parsing)
-    parser = Parser(tokens)
-    result = parser.parse()
-
-    if result == "SUCCESS" and parser.current_token.type != TokenType.EOF:
-        if parser.current_token.type != TokenType.SEMICOLON:
-            print(f"Error : Unparsed tokens left over : {parser.current_token.value}")
-            return 
+    # 3. Handle Results & Save Report
+    OutputHandler.save_report(result)
 
     if isinstance(result, SQLError):
-        print(f"PARSER ERROR : {result.to_txt()}")
-        logger.error(f"Validation Failed : {result.msg} at {result.line} : {result.column}")
-
+        print(f"❌ FAILED: {result.message} (Line: {result.line}, Col: {result.column})")
+        logger.error(f"Validation failed for {input_source}")
     else:
-        print("SUCCESS : SQL Grammer is Valid")
-        logger.info("Validation Successfull!")
-
-
-def run_test(source_input):
-    print(f"\n---Testinng : {source_input}---")
-
-    # 1. Test File Handler
-    raw_sql = FileHandler.read(source_input)
-    if not raw_sql :
-        logger.error("Could not retrieve SQL content.")
-        return
-    
-    # 2. Test Lexer
-    lexer = Lexer(raw_sql)
-    tokens = []
-
-    while True:
-        token = lexer.get_next_token()
-
-        if isinstance(token, SQLError):
-            print(f"Validation Error : {token.to_txt()}")
-            break
-
-        tokens.append(token)
-
-        if token.type.name == "EOF":
-            print("LEXING SUCCESSFUL")
-            for t in tokens:
-                print(t)
-            break
+        print(f"✅ PASSED: SQL is grammatically correct.")
+        logger.info(f"Validation successful for {input_source}")
 
 if __name__ == "__main__":
-    # #run_test("SELECT id, name FROM table;")
+    # You can now run multiple tests cleanly
+    test_queries = [
+        "SELECT * FROM users;",
+        "UPDATE employees SET salary = 5000 WHERE id = 1;",
+        "SELECT name FROM (SELECT * FROM staff);"
+    ]
 
-    # run_test("test/test.txt")
-
-    # #run_test("test/test.json")
-
-    # #run_test("test/bad.txt")
-    # validate_sql("SELECT * FRO users;")
-
-    # validate_sql("SELECT id, FROM users;")
-
-    # validate_sql("SELECT id, name FROM employee WHERE id = 10;")
-
-    validate_sql("SELECT name FROM users WHERE id IN (SELECT user_id FROM orders);")
-
-    # Test 2: Double Nested (Deep recursion!)
-    validate_sql("SELECT * FROM t1 WHERE id = (SELECT id FROM t2 WHERE x = (SELECT y FROM t3));")
-    
-    # Test 3: Broken Nested (Missing closing paren)
-    validate_sql("SELECT * FROM users WHERE id = (SELECT id FROM staff;")
+    for query in test_queries:
+        run_validator(query)

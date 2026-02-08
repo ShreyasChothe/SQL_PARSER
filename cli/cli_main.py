@@ -15,6 +15,7 @@ from rich.markdown import Markdown
 from utils.logger import setup_logger
 from utils.file_handler import FileHandler
 from engine.lexer import Lexer
+from engine.validator import ValidatorEngine
 from engine.exceptions import SQLError
 
 console = Console()
@@ -88,27 +89,20 @@ def show_error(err: SQLError):
 # ---------------- CORE ENGINE CALL ---------------- #
 
 def run_lexer(source_input: str):
-    raw_sql = FileHandler.read(source_input)
+    # This now handles both raw SQL or a File Path
+    raw_sql = FileHandler.read(source_input) if "." in source_input else source_input
+    
     if not raw_sql:
-        console.print(Panel.fit("[bold red]Failed to read input[/bold red]", border_style="red"))
+        console.print(Panel.fit("[bold red]No content to validate[/bold red]", border_style="red"))
         return
 
-    lexer = Lexer(raw_sql)
-    tokens = []
+    status, tokens = ValidatorEngine.validate_query(raw_sql)
 
-    while True:
-        token = lexer.get_next_token()
-
-        if isinstance(token, SQLError):
-            show_error(token)
-            return
-
-        tokens.append(token)
-
-        if token.type.name == "EOF":
-            break
-
-    show_tokens(tokens)
+    if isinstance(status, SQLError):
+        show_error(status)
+    else:
+        show_tokens(tokens)
+        console.print(Panel.fit("[bold green]✔ SQL Grammar is Valid[/bold green]", border_style="green"))
 
 # ---------------- MENU ACTIONS ---------------- #
 
@@ -137,86 +131,40 @@ def interactive_shell():
 def batch_validate_file():
     console.print(Panel.fit("[bold cyan]Batch SQL Validation[/bold cyan]", border_style="cyan"))
     
-    # Input file
     path = Prompt.ask("Enter input file path (.txt or .json)")
     raw_content = FileHandler.read(path)
     if not raw_content:
         console.print("[bold red]Failed to read input file[/bold red]")
         return
 
-    # Extract filename without extension for output naming
     base_name = Path(path).stem
-
-    # Output format
-    console.print("Select output format: txt / json / csv / all")
     out_format = Prompt.ask("Format", choices=["txt", "json", "csv", "all"], default="all")
 
-    # Prepare results storage
-    results = []
-    errors = []
-
-    # Determine queries
+    # Determine list of queries
+    queries = []
     if isinstance(raw_content, str):
-        # txt file, one query per line
         queries = [q.strip() for q in raw_content.splitlines() if q.strip()]
     elif isinstance(raw_content, dict):
-        # json file, expect "queries" key
         queries = raw_content.get("queries", [])
 
-    # Process each query
-    for idx, query in enumerate(queries, start=1):
-        lexer = Lexer(query)
-        tokens = []
+    # CALL THE ENGINE
+    results, errors = ValidatorEngine.batch_validate(queries)
 
-        while True:
-            token = lexer.get_next_token()
-            if isinstance(token, SQLError):
-                errors.append({
-                    "query_index": idx,
-                    "query": query,
-                    "message": token.msg,
-                    "line": token.line,
-                    "column": token.column,
-                    "hint": token.detail
-                })
-                break
-            tokens.append({"type": token.type.name, "value": token.value})
-            if token.type.name == "EOF":
-                break
-        
-        if tokens:
-            results.append({
-                "query_index": idx,
-                "query": query,
-                "tokens": tokens
-            })
-
-    # Save files using input filename as base
+    # OUTPUT HANDLING
     if out_format in ["txt", "all"]:
-        OutputHandler.save_txt(f"{base_name}_results.txt",
-                               "\n\n".join([f"Query {r['query_index']}:\n{r['query']}\nTokens: {r['tokens']}" for r in results]))
-        OutputHandler.save_txt(f"{base_name}_errors.txt",
-                               "\n\n".join([f"Query {e['query_index']}:\n{e['query']}\nError: {e['message']}\nLocation: Line {e['line']}, Col {e['column']}\nHint: {e['hint']}" for e in errors]))
+        OutputHandler.save_txt(f"{base_name}_results.txt", str(results))
+        OutputHandler.save_txt(f"{base_name}_errors.txt", str(errors))
     
     if out_format in ["json", "all"]:
         OutputHandler.save_json(f"{base_name}_results.json", results)
         OutputHandler.save_json(f"{base_name}_errors.json", errors)
 
     if out_format in ["csv", "all"]:
-        # Flatten tokens/errors for CSV
-        flat_results = []
-        for r in results:
-            for t in r["tokens"]:
-                flat_results.append({"query_index": r["query_index"], "query": r["query"], "token_type": t["type"], "token_value": t["value"]})
-        OutputHandler.save_csv(f"{base_name}_results.csv", flat_results)
+        # Flatten results for CSV
+        flat_results = [{"query_idx": r["query_index"], "query": r["query"]} for r in results]
+        OutputHandler.save_csv(f"{base_name}_summary.csv", flat_results)
 
-        flat_errors = []
-        for e in errors:
-            flat_errors.append({"query_index": e["query_index"], "query": e["query"], "message": e["message"], "line": e["line"], "column": e["column"], "hint": e["hint"]})
-        OutputHandler.save_csv(f"{base_name}_errors.csv", flat_errors)
-
-    console.print(Panel.fit(f"[bold green]Batch processing completed![/bold green]\nResults and errors saved in output folder with base name '{base_name}'", border_style="green"))
-
+    console.print(Panel.fit(f"[bold green]Batch Complete![/bold green]\nFound {len(results)} valid and {len(errors)} invalid queries.", border_style="green"))
 
 # ---------------- MAIN APP LOOP ---------------- #
 
