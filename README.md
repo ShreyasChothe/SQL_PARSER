@@ -1,6 +1,60 @@
-Project Title:- ANSI SQL Validator
-Project Description: The ANSI SQL Validator is a standalone Python application that validates SQL queries by performing lexical analysis, syntactic parsing, and rule-based validation. The system analyzes SQL statements without requiring a database connection and generates structured error reports in JSON format when validation fails.
+Project Title:-
+
+ANSI SQL Validator
+
+Project Description: 
+
+The ANSI SQL Validator is a standalone Python application that validates SQL queries by performing lexical analysis, syntactic parsing, and rule-based validation. The system analyzes SQL statements without requiring a database connection and generates structured error reports in JSON format when validation fails.
 This project simulates core compiler design principles, including token generation, syntax tree validation, and error handling mechanisms, making it a lightweight SQL syntax checking engine.
+
+
+Project Structure :
+
+SQL_PARSER/
+│
+├── .venv/
+│
+├── cli/
+│   └── cli_main.py
+│
+├── diagrams/
+│   ├── Activity.jpg
+│   ├── Architecture.jpg
+│   ├── class.jpg
+│   ├── Design.md
+│   ├── Requirements.md
+│   └── sequence.jpg
+│
+├── engine/
+│   ├── __pycache__/
+│   ├── exceptions.py
+│   ├── lexer.py
+│   ├── parser.py
+│   ├── tokens.py
+│   └── validator.py
+│
+├── output/
+│   ├── mansi_errors.txt
+│   └── mansi_results.txt
+│
+├── test/
+│   ├── bad.txt
+│   ├── mansi.txt
+│   ├── test.json
+│   └── test.txt
+│
+├── utils/
+│   ├── __pycache__/
+│   ├── __init__.py
+│   ├── file_handler.py
+│   ├── logger.py
+│   └── output_handler.py
+│
+├── .gitignore
+├── main.py
+├── Project.log
+└── testCases.py
+
 
 MAIN MENUE:
 ![Alt text](Screenshots/1.png)
