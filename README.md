@@ -48,6 +48,7 @@ Output files :
 Exit
 
 Closes the application safely.
+and allows safe exit
 
 ![Alt text](Screenshots/8.png)
 
