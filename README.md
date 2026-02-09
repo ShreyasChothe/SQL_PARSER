@@ -10,7 +10,7 @@ Validates a single SQL query entered directly in the CLI and displays tokens and
 screenshots/Screenshot 2026-02-09 185534.png
 if error then display error message
 screenshots/Screenshot 2026-02-09 185601.png
-![Alt text](diagrams/class.jpg)
+![Alt text](screenshots/Screenshot 2026-02-09 185601.png)
 
 
 Validate SQL from file
