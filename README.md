@@ -7,7 +7,7 @@ MAIN MENUE:
 
 Validate SQL from text
 Validates a single SQL query entered directly in the CLI and displays tokens and grammar validation result.
-screenshots/Screenshot 2026-02-09 185534.png
+![Alt}(screenshots/Screenshot 2026-02-09 185534.png)
 if error then display error message
 screenshots/Screenshot 2026-02-09 185601.png
 ![Alt text](screenshots/Screenshot 2026-02-09 185601.png)
