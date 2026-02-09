@@ -1,0 +1,1 @@
+[{'query_index': 1, 'query': 'txt', 'message': 'Unsupported statement start: IDENTIFIER', 'line': None, 'column': None, 'hint': None}]

@@ -1,0 +1,1 @@
+[{'query_index': 1, 'query': "SELECT * FROM 'oops, forgot to close the quote", 'message': 'Unterminated String Literal', 'line': 1, 'column': 47, 'hint': "Make sure you closed your single quotes (')."}]
