@@ -113,6 +113,7 @@ This diagram illustrates interaction between system components during query vali
 
 
 13. Detailed Module Design
+14. 
 13.1 CLI Layer
 Responsible for user interaction.
 Functions
@@ -197,5 +198,3 @@ Overall, this project demonstrates a practical application of Java programming, 
 
 
 
-9. System Architecture Diagram
-The following diagram shows the high-level system architecture and data flow.
