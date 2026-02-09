@@ -88,19 +88,27 @@ ________________________________________
 
 Diagrams:-
 9. System Architecture Diagram
+
 The following diagram shows the high-level system architecture and data flow.
+
 ![Alt text](diagrams/Architecture.jpg)
 
 10.Class Diagram
+
 This diagram shows major classes and their relationships.
+
 ![Alt text](diagrams/class.jpg)
 
 11.Activity Diagram 
+
 This diagram shows the workflow from user input to output generation
+
 ![Alt text](diagrams/Activity.jpg)
 
 12.Sequence Diagram
+
 This diagram illustrates interaction between system components during query validation.
+
 ![Alt text](diagrams/sequence.jpg)
 
 
