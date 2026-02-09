@@ -1,0 +1,2 @@
+query_idx,query
+1,SELECT * FROM users;
