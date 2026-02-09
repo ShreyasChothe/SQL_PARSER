@@ -5,27 +5,50 @@ This project simulates core compiler design principles, including token generati
 MAIN MENUE:
 ![Alt text](Screenshots/1.png)
 
+
+
 Validate SQL from text
+
 Validates a single SQL query entered directly in the CLI and displays tokens and grammar validation result.
+
 ![Alt text](Screenshots/2.png)
+
 if error then display error message
+
 ![Alt text](Screenshots/3.png)
 
+
 Validate SQL from file
+
 Reads a SQL query from a .txt or .json file and checks its syntax and token stream.
+
 ![Alt text](Screenshots/4.png)
 
+
+
 Interactive SQL shell
+
 Launches a mini SQL shell where users can continuously type and validate multiple SQL queries until exit.
+
 ![Alt text](Screenshots/5.png)
+
+
 Batch validation + generate output files
+
 Validates multiple SQL queries from a file and automatically generates result and error reports in TXT, JSON, and CSV formats.
+
 ![Alt text](Screenshots/6.png)
+
+
 Output files :
+
 ![Alt text](Screenshots/7.png)
 
+
 Exit
+
 Closes the application safely.
+
 ![Alt text](Screenshots/8.png)
 
 
