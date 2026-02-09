@@ -3,33 +3,30 @@ Project Description: The ANSI SQL Validator is a standalone Python application t
 This project simulates core compiler design principles, including token generation, syntax tree validation, and error handling mechanisms, making it a lightweight SQL syntax checking engine.
 
 MAIN MENUE:
-![Alt text](screenshots/Screenshot 2026-02-09 185508.png)
+![Alt text](Screenshots/1.png)
 
 Validate SQL from text
 Validates a single SQL query entered directly in the CLI and displays tokens and grammar validation result.
-![Alt}(screenshots/Screenshot 2026-02-09 185534.png)
+![Alt text](Screenshots/2.png)
 if error then display error message
-screenshots/Screenshot 2026-02-09 185601.png
-![Alt text](screenshots/Screenshot 2026-02-09 185601.png)
-
+![Alt text](Screenshots/3.png)
 
 Validate SQL from file
 Reads a SQL query from a .txt or .json file and checks its syntax and token stream.
-![Alt text](screenshots/Screenshot 2026-02-09 185645.png)
-
+![Alt text](Screenshots/4.png)
 
 Interactive SQL shell
 Launches a mini SQL shell where users can continuously type and validate multiple SQL queries until exit.
-![Alt text](screenshots/Screenshot 2026-02-09 185726.png)
-
+![Alt text](Screenshots/5.png)
 Batch validation + generate output files
 Validates multiple SQL queries from a file and automatically generates result and error reports in TXT, JSON, and CSV formats.
-![Alt text](screenshots/Screenshot 2026-02-09 185952.png)
-![Alt test](screenshots/Screenshot 2026-02-09 190009.png)
+![Alt text](Screenshots/6.png)
+Output files :
+![Alt text](Screenshots/7.png)
 
 Exit
 Closes the application safely.
-![Alt test](screenshots/Screenshot 2026-02-09 190107.png)
+![Alt text](Screenshots/8.png)
 
 
 
