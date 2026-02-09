@@ -1,7 +1,8 @@
 ANSI SQL VALIDATOR — Design Documentation
 
 Group name - Gryffindore
-members- 1)Shreyash Chote
+Group no -1
+members- 1)Shreyas Chothe
          2)Adwait Chavan
          3)Mansi kawale
 1. Project Name
@@ -154,6 +155,38 @@ Generates reports:
 •	JSON → Structured
 •	CSV → Spreadsheet compatible
 Rule: One output file per query.
+
+
+
+14 Future Scope
+
+The ANSI SQL Validator can be further enhanced with several improvements to increase its usability and functionality:
+
+Graphical User Interface (GUI):
+Develop a GUI version to make it more user-friendly, allowing users to validate queries without using the command line.
+
+Support for Multiple SQL Dialects:
+Extend support beyond ANSI SQL to handle dialects like MySQL, PostgreSQL, and Oracle SQL for wider applicability.
+
+Auto-Correction Suggestions:
+Implement features to suggest corrections or highlight the exact location of syntax errors for faster debugging.
+
+Integration with IDEs:
+Provide plugins or extensions for popular IDEs like VS Code or IntelliJ IDEA to validate SQL queries in real-time.
+
+Advanced Query Analysis:
+Add capabilities to check query optimization, detect logical errors, and provide performance tips.
+
+Online or Cloud Version:
+Make the validator accessible via a web interface or as a cloud-based service for collaborative environments.
+
+
+Conclusion
+
+The ANSI SQL Validator project successfully provides a command-line interface (CLI) tool to validate SQL queries for syntax correctness according to ANSI SQL standards. The project ensures that users can quickly identify and correct errors in their SQL statements, improving code quality and reducing debugging time. By supporting multiple SQL operations, including SELECT, INSERT, UPDATE, and DELETE, the validator enhances database development efficiency. The modular design and clear architecture make the system easy to maintain, extend, and integrate into larger software projects.
+
+Overall, this project demonstrates a practical application of Java programming, SQL parsing, and error-handling mechanisms, offering a reliable tool for both learners and professionals working with databases.
+
 
 
 9. System Architecture Diagram
