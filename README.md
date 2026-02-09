@@ -9,52 +9,50 @@ This project simulates core compiler design principles, including token generati
 
 
 Project Structure :
-
 SQL_PARSER/
 │
 ├── .venv/
 │
 ├── cli/
-│   └── cli_main.py
+│ └── cli_main.py
 │
 ├── diagrams/
-│   ├── Activity.jpg
-│   ├── Architecture.jpg
-│   ├── class.jpg
-│   ├── Design.md
-│   ├── Requirements.md
-│   └── sequence.jpg
+│ ├── Activity.jpg
+│ ├── Architecture.jpg
+│ ├── class.jpg
+│ ├── Design.md
+│ ├── Requirements.md
+│ └── sequence.jpg
 │
 ├── engine/
-│   ├── __pycache__/
-│   ├── exceptions.py
-│   ├── lexer.py
-│   ├── parser.py
-│   ├── tokens.py
-│   └── validator.py
+│ ├── pycache/
+│ ├── exceptions.py
+│ ├── lexer.py
+│ ├── parser.py
+│ ├── tokens.py
+│ └── validator.py
 │
 ├── output/
-│   ├── mansi_errors.txt
-│   └── mansi_results.txt
+│ ├── mansi_errors.txt
+│ └── mansi_results.txt
 │
 ├── test/
-│   ├── bad.txt
-│   ├── mansi.txt
-│   ├── test.json
-│   └── test.txt
+│ ├── bad.txt
+│ ├── mansi.txt
+│ ├── test.json
+│ └── test.txt
 │
 ├── utils/
-│   ├── __pycache__/
-│   ├── __init__.py
-│   ├── file_handler.py
-│   ├── logger.py
-│   └── output_handler.py
+│ ├── pycache/
+│ ├── init.py
+│ ├── file_handler.py
+│ ├── logger.py
+│ └── output_handler.py
 │
 ├── .gitignore
 ├── main.py
 ├── Project.log
 └── testCases.py
-
 
 MAIN MENUE:
 ![Alt text](Screenshots/1.png)
