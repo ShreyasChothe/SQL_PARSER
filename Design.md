@@ -1,7 +1,9 @@
 ANSI SQL VALIDATOR — Design Documentation
 
 Group name - Gryffindore
+
 Group no -1
+
 members- 1)Shreyas Chothe
          2)Adwait Chavan
          3)Mansi kawale
@@ -34,8 +36,8 @@ ________________________________________
 5. Software Version
 Component	Version
 Programming Language	 Python 3.x
-Operating Systems	Windows, Linux, macOS
-Development Tools	VS Code / PyCharm
+Operating Systems	Windows
+Development Tools	VS Code 
 Testing Framework	PyTest
 ________________________________________
 6. Test Coverage
