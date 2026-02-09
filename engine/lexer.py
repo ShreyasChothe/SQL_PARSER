@@ -1,16 +1,19 @@
 import logging
 from engine.tokens import TokenType, KEYWORDS
+from engine.exceptions import SQLError
 
 logger = logging.getLogger("SQLValidator")
 
 class Token:
     """The Individual unit produced by the Lexer."""
-    def __init__(self, type, value):
+    def __init__(self, type, value, line, column):
         self.type = type
         self.value = value
+        self.line = line
+        self.column = column
 
     def __repr__(self):
-        return f"Token({self.type}, {self.value})"
+        return f"Token({self.type}, '{self.value}' at {self.line} : {self.column})"
     
 class Lexer:
     def __init__(self, text):
@@ -37,6 +40,10 @@ class Lexer:
     def get_next_token(self):
         """"The 'Engine' which finds the next token!!"""
         while self.current_char is not None:
+
+            start_col = self.column
+            start_line = self.line
+
             # 1. Skip Whitespace
             if self.current_char.isspace():
                 self.advance()
@@ -44,7 +51,9 @@ class Lexer:
             
             # 2. Handle Keywords / Identifiers (Words)
             if self.current_char.isalpha() or self.current_char == '_':
-                return self._handle_word()
+                word_text = self._handle_word()
+                t_type = KEYWORDS.get(word_text.upper(), TokenType.IDENTIFIER)
+                return Token(t_type, word_text, start_line, start_col)
             
             # handle Numbers
             if self.current_char.isdigit():
@@ -57,37 +66,36 @@ class Lexer:
             # 3. Handle Operator
             if self.current_char == "*":
                 self.advance()
-                return Token(TokenType.ASTERISK, '*')
+                return Token(TokenType.ASTERISK, '*', start_line, start_col)
             
             if self.current_char == ",":
                 self.advance()
-                return Token(TokenType.COMMA, ',')
+                return Token(TokenType.COMMA, ',', start_line, start_col)
             
             if self.current_char == "=":
                 self.advance()
-                return Token(TokenType.EQUALS, '=')
+                return Token(TokenType.EQUALS, '=', start_line, start_col)
             
             if self.current_char == "(":
                 self.advance()
-                return Token(TokenType.LPAREN, '(')
+                return Token(TokenType.LPAREN, '(', start_line, start_col)
             
             if self.current_char == ")":
                 self.advance()
-                return Token(TokenType.RPAREN, ')')
+                return Token(TokenType.RPAREN, ')', start_line, start_col)
             
             if self.current_char == ";":
                 self.advance()
-                return Token(TokenType.SEMICOLON, ';')
+                return Token(TokenType.SEMICOLON, ';', start_line, start_col)
             
             logger.error(f"Unknown Character Found : {self.current_char}")
-            from engine.exceptions import SQLError
             return SQLError(
                 message=f"Unknown Character '{self.current_char}' found!",
                 line=self.line,
                 column=self.column,
                 detail="Unknown Character has been detected!")
         
-        return Token(TokenType.EOF, None)
+        return Token(TokenType.EOF, None, self.line, self.column)
     
     def _handle_word(self):
         result = ""
@@ -95,9 +103,7 @@ class Lexer:
             result += self.current_char
             self.advance()
 
-        # check that word in dictionary
-        token_type = KEYWORDS.get(result.upper(), TokenType.IDENTIFIER)
-        return Token(token_type, result)
+        return result
     
     def _handle_number(self):
         result = ""
@@ -107,7 +113,6 @@ class Lexer:
                 decimal_count += 1
                 if decimal_count > 1:
                     logger.error("Invalid Number Format : multiple decimal points")
-                    from engine.exceptions import SQLError
                     return SQLError(
                         message="Invalid Number Format",
                         line=self.line,
@@ -118,7 +123,7 @@ class Lexer:
             result += self.current_char
             self.advance()
         
-        return Token(TokenType.NUMBER, float(result) if decimal_count > 0 else int(result))
+        return Token(TokenType.NUMBER, float(result) if decimal_count > 0 else int(result), self.line, self.column)
     
     def _handle_string(self):
         result = ""
@@ -131,10 +136,9 @@ class Lexer:
 
         if self.current_char == "'":
             self.advance()
-            return Token(TokenType.STRING, result)
+            return Token(TokenType.STRING, result, self.line, self.column)
         else:
             logger.error("Lexer Error : Unterminated string literal")
-            from engine.exceptions import SQLError
             return SQLError(
                 message="Unterminated String Literal",
                 line=self.line,

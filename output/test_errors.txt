@@ -1,0 +1,5 @@
+Query 3:
+SELECT name, age FROM --customers;
+Error: Unknown Character '-' found!
+Location: Line 1, Col 23
+Hint: Unknown Character has been detected!
