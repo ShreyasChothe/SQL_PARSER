@@ -153,7 +153,7 @@ Make sure you have:
 
 2 . Clone the Repository
 Clone the Repository
-git clone https://github.com/your-username/sql-validator.git
+git clone https://github.com/ShreyasChothe/SQL_PARSER.git
 cd sql-validator
 
 Install Dependencies
