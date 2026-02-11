@@ -186,13 +186,39 @@ class Parser:
         return SQLError("Expected value or subquery", self.current_token.line, self.current_token.column)
 
     def _handle_where_clause(self):
-        """Updated WHERE to support 'IN' or subqueries."""
+         
         self.eat(TokenType.WHERE)
-        if self.eat(TokenType.IDENTIFIER): return self.error
         
-        # Support for '=' or 'IN'
-        if self.current_token.type in [TokenType.EQUALS, TokenType.IN]:
+        # column name
+        if self.eat(TokenType.IDENTIFIER): 
+            return self.error
+
+        # All comparison operators
+        COMPARISON_OPERATORS = [
+            TokenType.EQUALS,
+            TokenType.NOT_EQUALS,
+            TokenType.LESS,
+            TokenType.LESS_EQUALS,
+            TokenType.GREATER,
+            TokenType.GREATER_EQUALS
+        ]
+
+        # Case 1: WHERE col = / > / < / >= / <= / != value
+        if self.current_token.type in COMPARISON_OPERATORS:
             self.advance()
             return self._handle_value_or_subquery()
-            
-        return SQLError("Expected operator (=, IN) in WHERE clause", self.current_token.line, self.current_token.column)
+
+        # Case 2: WHERE col IN (subquery / values)
+        if self.current_token.type == TokenType.IN:
+            self.advance()
+            if self.eat(TokenType.LPAREN): return self.error
+            err = self._handle_value_or_subquery()
+            if err: return err
+            if self.eat(TokenType.RPAREN): return self.error
+            return None
+
+        return SQLError(
+            "Expected comparison operator (=, !=, <, >, <=, >=) or IN in WHERE clause",
+            self.current_token.line,
+            self.current_token.column
+        )

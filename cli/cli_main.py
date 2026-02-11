@@ -61,10 +61,10 @@ def show_menu():
     menu_table.add_column("Action", justify="left", style="bright_white")
 
     menu_table.add_row("1", "Validate SQL from text")
-    menu_table.add_row("2", "Validate SQL from file")
+    menu_table.add_row("2", "Validate SQL from file(Enter file path)")
     menu_table.add_row("3", "Interactive SQL shell")
-    menu_table.add_row("4", "Validate multiple queries from file and Generate output files")
-
+    menu_table.add_row("4", "validate fron file & Generate output files")
+    menu_table.add_row("5", "Exit")
 
 
     console.print(menu_table)
@@ -95,20 +95,21 @@ def show_error(err: SQLError):
 # ---------------- CORE ENGINE CALL ---------------- #
 
 def run_lexer(source_input: str):
-    # This now handles both raw SQL or a File Path
     raw_sql = FileHandler.read(source_input) if "." in source_input else source_input
     
     if not raw_sql:
         console.print(Panel.fit("[bold red]No content to validate[/bold red]", border_style="red"))
         return
 
-    status, tokens = ValidatorEngine.validate_query(raw_sql)
+    result = ValidatorEngine.validate_query(raw_sql)
 
-    if isinstance(status, SQLError):
-        show_error(status)
+    if result["status"] == "INVALID":
+        err = result["error"]
+        show_error(SQLError(err["message"], err["line"], err["column"], err["hint"]))
     else:
-        show_tokens(tokens)
+        show_tokens(result["tokens"])
         console.print(Panel.fit("[bold green]✔ SQL Grammar is Valid[/bold green]", border_style="green"))
+
 
 # ---------------- MENU ACTIONS ---------------- #
 
@@ -154,23 +155,48 @@ def batch_validate_file():
         queries = raw_content.get("queries", [])
 
     # CALL THE ENGINE
-    results, errors = ValidatorEngine.batch_validate(queries)
+    reports_txt = []
+    json_results = []
+    csv_summary = []
 
-    # OUTPUT HANDLING
+    for idx, query in enumerate(queries, start=1):
+        result = ValidatorEngine.validate_query(query)
+        
+        # Build pretty TXT report ⭐
+        report_text = ValidatorEngine.build_text_report(result, query)
+        reports_txt.append(f"\n\n--- QUERY {idx} ---\n{report_text}")
+
+        # JSON summary
+        json_results.append({
+            "query_index": idx,
+            "query": query,
+            "status": result["status"]
+        })
+
+        # CSV summary
+        csv_summary.append({
+            "query_index": idx,
+            "query": query,
+            "status": result["status"]
+        })
+
+    # SAVE FILES
     if out_format in ["txt", "all"]:
-        OutputHandler.save_txt(f"{base_name}_results.txt", str(results))
-        OutputHandler.save_txt(f"{base_name}_errors.txt", str(errors))
-    
+        OutputHandler.save_txt(f"{base_name}_report.txt", "\n".join(reports_txt))
+
     if out_format in ["json", "all"]:
-        OutputHandler.save_json(f"{base_name}_results.json", results)
-        OutputHandler.save_json(f"{base_name}_errors.json", errors)
+        OutputHandler.save_json(f"{base_name}_summary.json", json_results)
 
     if out_format in ["csv", "all"]:
-        # Flatten results for CSV
-        flat_results = [{"query_idx": r["query_index"], "query": r["query"]} for r in results]
-        OutputHandler.save_csv(f"{base_name}_summary.csv", flat_results)
+        OutputHandler.save_csv(f"{base_name}_summary.csv", csv_summary)
 
-    console.print(Panel.fit(f"[bold green]Batch Complete![/bold green]\nFound {len(results)} valid and {len(errors)} invalid queries.", border_style="green"))
+    valid_count = sum(1 for r in json_results if r["status"] == "VALID")
+    invalid_count = len(json_results) - valid_count
+
+    console.print(Panel.fit(
+        f"[bold green]Batch Complete![/bold green]\nValid: {valid_count} | Invalid: {invalid_count}",
+        border_style="green"))
+
 
 # ---------------- MAIN APP LOOP ---------------- #
 

@@ -84,6 +84,42 @@ class Lexer:
                 self.advance()
                 return Token(TokenType.RPAREN, ')', start_line, start_col)
             
+                        # --- Comparison Operators (VERY IMPORTANT) ---
+
+            # >=
+            if self.current_char == ">" and self.peek() == "=":
+                self.advance()
+                self.advance()
+                return Token(TokenType.GREATER_EQUALS, ">=", start_line, start_col)
+
+            # <=
+            if self.current_char == "<" and self.peek() == "=":
+                self.advance()
+                self.advance()
+                return Token(TokenType.LESS_EQUALS, "<=", start_line, start_col)
+
+            # !=
+            if self.current_char == "!" and self.peek() == "=":
+                self.advance()
+                self.advance()
+                return Token(TokenType.NOT_EQUALS, "!=", start_line, start_col)
+
+            # <>
+            if self.current_char == "<" and self.peek() == ">":
+                self.advance()
+                self.advance()
+                return Token(TokenType.NOT_EQUALS, "<>", start_line, start_col)
+
+            # >
+            if self.current_char == ">":
+                self.advance()
+                return Token(TokenType.GREATER, ">", start_line, start_col)
+
+            # <
+            if self.current_char == "<":
+                self.advance()
+                return Token(TokenType.LESS, "<", start_line, start_col)
+
             if self.current_char == ";":
                 self.advance()
                 return Token(TokenType.SEMICOLON, ';', start_line, start_col)
@@ -145,3 +181,9 @@ class Lexer:
                 column= self.column,
                 detail="Make sure you closed your single quotes (')."
             )
+    def peek(self):
+       
+            peek_pos = self.pos + 1
+            if peek_pos >= len(self.text):
+                return None
+            return self.text[peek_pos]

@@ -1,0 +1,14 @@
+
+
+--- QUERY 1 ---
+SQL QUERY VALIDATION REPORT
+========================================
+Query : SELECT * FROM employees;  SELECT name,- salary FROM employees;
+
+QUERY STATUS : INVALID
+----------------------------------------
+Phase   : LEXING
+Message : Unknown Character '-' found!
+Line    : 1
+Column  : 39
+Hint    : Unknown Character has been detected!
