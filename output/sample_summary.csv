@@ -1,0 +1,2 @@
+query_index,query,status
+1,"SELECT * FROM employees;  SELECT name,- salary FROM employees;",INVALID
